@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clock UI Design</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="slebew">
+        <!-- Header & Tombol Ganti Format 12H / 24H -->
+        <div class="clock-header">
+            <h2>Sekarang Pukul</h2>
+            <button id="format-toggle" type="button" title="Klik untuk ganti format 12 / 24 Jam">12H</button>
+        </div>
+
+        <!-- Tampilan Tanggal Real-Time -->
+        <div id="date">Memuat tanggal...</div>
+
+        <div id="clock">
+            <div id="time">
+                <div class="time-box">
+                    <span id="hour">00</span>
+                    <span class="label">Jam</span>
+                </div>
+                <div class="time-box">
+                    <span id="minutes">00</span>
+                    <span class="label">Menit</span>
+                </div>
+                <div class="time-box">
+                    <span id="seconds">00</span>
+                    <span class="label">Detik</span>
+                </div>
+                <div class="time-box" id="ampm-box">
+                    <span id="ampm">AM</span>
+                    <span class="label">Format</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        let is24Hour = false;
+
+        function updateClock() {
+            const hourEl = document.getElementById('hour');
+            const minutesEl = document.getElementById('minutes');
+            const secondsEl = document.getElementById('seconds');
+            const ampmEl = document.getElementById('ampm');
+            const ampmBox = document.getElementById('ampm-box');
+            const dateEl = document.getElementById('date');
+
+            const now = new Date();
+            let h = now.getHours();
+            let m = now.getMinutes();
+            let s = now.getSeconds();
+
+            // Format 12H vs 24H
+            if (is24Hour) {
+                ampmBox.style.display = 'none';
+            } else {
+                ampmBox.style.display = 'block';
+                const ampm = h >= 12 ? 'PM' : 'AM';
+                h = h % 12;
+                h = h ? h : 12; // Jam 0 (tengah malam) diubah jadi 12
+                ampmEl.innerHTML = ampm;
+            }
+
+            // Tambahkan angka 0 di depan jika di bawah 10
+            hourEl.innerHTML = (h < 10) ? '0' + h : h;
+            minutesEl.innerHTML = (m < 10) ? '0' + m : m;
+            secondsEl.innerHTML = (s < 10) ? '0' + s : s;
+
+            // Update Tanggal Bahasa Indonesia
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            dateEl.innerHTML = now.toLocaleDateString('id-ID', options);
+        }
+
+        // Toggle Format Jam saat tombol diklik
+        const formatBtn = document.getElementById('format-toggle');
+        formatBtn.addEventListener('click', function() {
+            is24Hour = !is24Hour;
+            this.innerHTML = is24Hour ? '24H' : '12H';
+            updateClock();
+        });
+
+        // Jalankan langsung tanpa menunggu jeda 1 detik pertama
+        updateClock();
+        setInterval(updateClock, 1000);
+    </script>
+</body>
+</html>
